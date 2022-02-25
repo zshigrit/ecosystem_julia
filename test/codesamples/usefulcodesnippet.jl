@@ -12,7 +12,13 @@ range_step(3, xtest)
 # range_step(6, RangeStepIrregular)
 
 for i = 1:3
-    @eval $(Symbol(:xx,i)) = 1 
+    @eval $(Symbol(:yy,i)) = i 
+end
+
+for i in 785:785
+    println(i)
+    eval(:($(Symbol(:v,"_",i)) = i ))#rand(1,1)
+    println(v_785)
 end
 
 println(xx1)
