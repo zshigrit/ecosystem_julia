@@ -1,106 +1,102 @@
-## Initialize the model
+## main program
+"""
+note: there are in total 5 soil layers;
+however, I add the 6th layer as a default for whole soil porfile
+for comparison.
+"""
+module main
 
-# parameterization
-par = SoilPar();
+    using Plots
+    using UnPack
+    using DataFrames
+    using StatsPlots
 
-# flux initilization (default values are 0s)
-flux_pomo = Flux_POMo();flux_pomh = Flux_POMh();
-flux_mom = Flux_MOM(); 
-flux_dom = Flux_DOM(); # note: qom is wrapped in dom
-flux_mba = Flux_MBA(); flux_mbd = Flux_MBD();
+    include("types/SoilPar.jl")
+    include("types/SoilLayersX.jl")
+    include("types/CFluxes.jl")
+    include("types/CPools.jl")
+    include("types/EmptyStruct.jl")
 
-# parameters to be added 
-LF0 = 0.1
-r0 = 0.01
-fQOM = 0.05
+    include("functions/DepthDependencePar.jl")
+    include("functions/TempDependencePar.jl")
+    include("functions/MM.jl")
+    include("functions/Enzyme.jl")
+    include("functions/Flux.jl")
+    include("functions/Pool.jl")
+    include("functions/InitModel.jl")
+    include("functions/ModelRun.jl")
+    include("functions/Outputs.jl")
+    # include("functions/Plot.jl")
 
-# initial carbon pool
-soc = 1.578 # mg/cm3 
-poc = 0.377; poc_o = poc * LF0; poc_h = poc * (1.0 - LF0); 
-moc = 1.064;qoc = moc * fQOM; 
-doc = 0.137;
-mbc = 0.033; mbc_a = mbc * r0; mbc_d = mbc * (1.0 - r0);
-epo = 6.0e-5
-eph = 6.0e-5
-em  = 6.0e-5
 
-# _CPools = CPools(10000.,10000.,2000.,200.,120.,100.,150.,0.1,0.1,0.1)
-CPools1 = CPools(poc_o,poc_h,moc,doc,qoc,mbc_a,mbc_d,epo,eph,em)
-pools = CPools1
+    nyear=10;ncycle=10;nlayer=5;
+    par_scenarios = ["con","dec","inc"]
+    # parameters to be added 
+    LF0 = 0.1
+    r0 = 0.01
+    fQOM = 0.05
 
-## carbon input
-# litter_pomo = 100000.0/365.0/24.0 * 0.5
-# litter_pomh = 100000.0/365.0/24.0 * 0.25
-# litter_dom = 100000.0/365.0/24.0 * 0.25
 
-SIN_day_str = readlines("./test/SIN_day.dat") # unit: mgC-cm2-d
+    # flux initilization (default values are 0s)
+    flux_pomo = Flux_POMo();flux_pomh = Flux_POMh();
+    flux_mom = Flux_MOM(); 
+    flux_dom = Flux_DOM(); # note: qom is wrapped in dom
+    flux_mba = Flux_MBA(); flux_mbd = Flux_MBD();
 
-SIN_day = parse.(Float64, SIN_day_str) # string to numeric
-
-SIN_day = SIN_day[3:end]
-
-SIN_hour = SIN_day ./24
-
-SIN_input = SIN_hour .* par.fINP;
-
-depth = 100.0 # cm
-
-# 0.07, 0.37, 0.56 # fraction type I
-f_l_pomo = 0.07 # to be added to parameter list 
-f_l_pomh = 0.37 # to be added to parameter list
-f_l_dom = 0.56 # to be added to parameter list
-litter_pomo_array = SIN_input .* f_l_pomo/depth;
-litter_pomh_array = SIN_input .* f_l_pomh/depth;
-litter_dom_array  = SIN_input .* f_l_dom/depth; 
-
-## model run
-
-record_POMh = [poc_h]
-record_POMo = [poc_o]
-record_MOM = [moc]
-record_MBD = [mbc_d]
-record_MBA = [mbc_a]
-record_QOM = [qoc]
-record_DOM = [doc]
-
-# litter_pomo_record = []
-# litter_pomh_record = []
-# litter_dom_record = []
-
-pomo_dec_record = []
-pomh_dec_record = []
-mom_dec_record = []
-dom_dec_record = []
-
-for iday = 1:365*10
-    for ihour = 1:24
-        global litter_pomo = litter_pomo_array[iday]
-        global litter_pomh = litter_pomh_array[iday]
-        global litter_dom = litter_dom_array[iday]
-
-        # ========================
-        # pomo_dec = MM_pomo(par,CPools1); pomh_dec = MM_pomh(par,CPools1);
-        # mom_dec = MM_mom(par,CPools1); dom_dec = MM_dom(par,CPools1);
-
-        # push!(pomo_dec_record,pomo_dec)
-        # push!(pomh_dec_record,pomh_dec)
-        # push!(mom_dec_record,mom_dec)
-        # push!(dom_dec_record,dom_dec)
+    for par_scenario in par_scenarios
+        @eval $(Symbol(:output_ly,"_",par_scenario)) = create_dataframe(AbstractFloat,nlayer);
+        # output_ly = create_dataframe(AbstractFloat,nlayer);
+        par_vary = @eval $(Symbol(:par,"_",par_scenario))
+        output_ly = @eval $(Symbol(:output_ly,"_",par_scenario))
         
-        CPools!(par,CPools1)
-        # CPoolsy!(par,pools)
+        for ilayer = 1:nlayer+1
+            println(ilayer)
+            par = SoilPar();
+            InitParDepth!(par,ilayer,par_vary)
+            cpools = InitCPools(ilayer)
+            input_c = InitCInputs(ilayer,par);
+            ModRunDepth!(par,cpools,ilayer,output_ly,input_c,depth_output)
+        end
     end
-    push!(record_POMo,CPools1.POMo)
-    push!(record_POMh,CPools1.POMh)
-    push!(record_MOM,CPools1.MOM)
-    push!(record_QOM,CPools1.QOM)
-    push!(record_DOM,CPools1.DOM)
 
-    push!(record_MBD,CPools1.MBD)
-    push!(record_MBA,CPools1.MBA)
 
-    # push!(litter_pomo_record,litter_pomo)
-    # push!(litter_pomh_record,litter_pomh)
-    # push!(litter_dom_record,litter_dom)
-end 
+    output_ly_con[:,"SOM"] = output_ly_con[:,"POMh"] + output_ly_con[:,"POMo"] + output_ly_con[:,"MOM"];
+    output_ly_dec[:,"SOM"] = output_ly_dec[:,"POMh"] + output_ly_dec[:,"POMo"] + output_ly_dec[:,"MOM"];
+    output_ly_inc[:,"SOM"] = output_ly_inc[:,"POMh"] + output_ly_inc[:,"POMo"] + output_ly_inc[:,"MOM"];
 
+    ## convert concentration to content
+    sl = SoilLayersX();
+    sl_dif = [(sl.layer1[2]-sl.layer1[1]),
+                (sl.layer2[2]-sl.layer2[1]),
+                (sl.layer3[2]-sl.layer3[1]),
+                (sl.layer4[2]-sl.layer4[1]),
+                (sl.layer5[2]-sl.layer5[1]),
+                100]
+    output_ly_con[:,"SOM_gm-2"] = output_ly_con[:,"SOM"] .* sl_dif * 100.0 * 100.0 * 10^(-3)
+    output_ly_dec[:,"SOM_gm-2"] = output_ly_dec[:,"SOM"] .* sl_dif * 100.0 * 100.0 * 10^(-3)
+    output_ly_inc[:,"SOM_gm-2"] = output_ly_inc[:,"SOM"] .* sl_dif * 100.0 * 100.0 * 10^(-3);
+
+    ## plotting
+    ll = Array{Float64}(undef, 5, 3)
+    for ilayer = 1:5
+        # @eval $(Symbol(:l,ilayer)) = [output_ly_con[ilayer,"SOM"],
+        #                               output_ly_dec[ilayer,"SOM"],
+        #                               output_ly_inc[ilayer,"SOM"]]
+        ll[ilayer,:]= [output_ly_con[ilayer,"SOM_gm-2"],
+                        output_ly_dec[ilayer,"SOM_gm-2"],
+                        output_ly_inc[ilayer,"SOM_gm-2"]]
+    end
+
+    
+    label = ["0-10 cm" "10-30 cm" "30-50 cm" "50-70 cm" "70-100 cm"]
+    groupedbar(par_scenarios,transpose(ll),
+                bar_position = :stack,
+                bar_width=0.4,label=label,guidefontsize=8,
+                legend=:outertopright,legendfontsize=10,
+                foreground_color_legend = nothing,
+                ylabel = "Soil Carbon (g/m2)",
+                size=(400,200),dpi=600)
+
+    savefig("soc_CPools_layers_100yrs_x.png")
+
+end # module

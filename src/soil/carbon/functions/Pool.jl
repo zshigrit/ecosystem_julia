@@ -1,6 +1,10 @@
-function CPools!(par::SoilPar,pools::CPools)
+##4 developing functions: carbon pools 
+function CPools!(par::SoilPar,pools::CPools,input_c)
     @unpack POMo,POMh,MOM,DOM,QOM,MBA,MBD,EPO,EPH,EM = pools
     # @unpack EPO,EPH,EM = pools
+    litter_pomo = input_c.litter_pomo_array
+    litter_pomh = input_c.litter_pomh_array
+    litter_dom = input_c.litter_dom_array
 
     pomo_dec = MM(par,pools,flux_pomo); pomh_dec = MM(par,pools,flux_pomh);
     mom_dec = MM(par,pools,flux_mom); dom_dec = MM(par,pools,flux_dom);
