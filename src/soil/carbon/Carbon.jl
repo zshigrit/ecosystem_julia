@@ -13,7 +13,8 @@ module main
 
     include("types/SoilPar.jl")
     include("types/SoilLayersX.jl")
-    include("types/CFluxes.jl")
+    # include("types/CFluxes.jl")
+    include("types/CFluxes_NEW.jl")
     include("types/CPools.jl")
     include("types/EmptyStruct.jl")
 
@@ -38,26 +39,22 @@ module main
     fQOM = 0.05
     Temp = 20.0 + 2.0
 
-    # flux initilization (default values are 0s)
-    flux_pomo = Flux_POMo();flux_pomh = Flux_POMh();
-    flux_mom = Flux_MOM(); 
-    flux_dom = Flux_DOM(); # note: qom is wrapped in dom
-    flux_mba = Flux_MBA(); flux_mbd = Flux_MBD();
-
     for par_scenario in par_scenarios
-        @eval $(Symbol(:output_ly,"_",par_scenario)) = create_dataframe(AbstractFloat,nlayer);
+        @eval $(Symbol(:output_ly,"_",par_scenario)) = create_dataframe(AbstractFloat,nlayer); #@eval make it global
         # output_ly = create_dataframe(AbstractFloat,nlayer);
         par_vary = @eval $(Symbol(:par,"_",par_scenario))
         output_ly = @eval $(Symbol(:output_ly,"_",par_scenario))
         
+    
         for ilayer = 1:nlayer+1
             println(ilayer)
             par = SoilPar();
             InitParDepth!(par,ilayer,par_vary)
-            ParTemp!(par,Temp)
-            cpools = InitCPools(ilayer)
+            # ParTemp!(par,Temp)
+            cpools  = InitCPools(ilayer)
+            cfluxes = InitCFluxes(ilayer)
             input_c = InitCInputs(ilayer,par);
-            ModRunDepth!(par,cpools,ilayer,output_ly,input_c,depth_output)
+            ModRunDepth!(par,cpools,cfluxes,ilayer,output_ly,input_c,depth_output)
         end
     end
 
@@ -99,6 +96,6 @@ module main
                 ylabel = "Soil Carbon (g/m2)",
                 size=(400,200),dpi=600)
 
-    savefig("soc_CPools_layers_100yrs_tem_sensix.png")
+    savefig("soc_CPools_layers_100yrs_xxx.png")
 
 end # module

@@ -1,23 +1,23 @@
 ##4 developing functions: carbon pools 
-function CPools!(par::SoilPar,pools::CPools,input_c)
+function CPools!(par::SoilPar,pools::CPools,fluxes::CFluxes,input_c)
     @unpack POMo,POMh,MOM,DOM,QOM,MBA,MBD,EPO,EPH,EM = pools
     # @unpack EPO,EPH,EM = pools
     litter_pomo = input_c.litter_pomo_array
     litter_pomh = input_c.litter_pomh_array
     litter_dom = input_c.litter_dom_array
 
-    pomo_dec = MM(par,pools,flux_pomo); pomh_dec = MM(par,pools,flux_pomh);
-    mom_dec = MM(par,pools,flux_mom); dom_dec = MM(par,pools,flux_dom);
+    pomo_dec = MM(par,pools,Flux_POMo); pomh_dec = MM(par,pools,Flux_POMh);
+    mom_dec = MM(par,pools,Flux_MOM); dom_dec = MM(par,pools,Flux_DOM);
 
-    pomo_dom,pomo_mom = Flux!(par,pools,flux_pomo)
-    pomh_dom,pomh_mom = Flux!(par,pools,flux_pomh)
-    dom_mba, dom_qom, qom_dom = Flux!(par,pools,flux_dom)
+    pomo_dom,pomo_mom = Flux!(par,pools,fluxes,Flux_POMo)
+    pomh_dom,pomh_mom = Flux!(par,pools,fluxes,Flux_POMh)
+    dom_mba, dom_qom, qom_dom = Flux!(par,pools,fluxes,Flux_DOM)
     
     mba_mortality, mba_dom, mba_pomo, mba_pomh,
     mba_mbd, mba_CO2_growth, mba_CO2_maintn = 
-    Flux!(par,pools,flux_mba);
+    Flux!(par,pools,fluxes,Flux_MBA);
 
-    mbd_mba, mbd_CO2_maintn = Flux!(par,pools,flux_mbd)
+    mbd_mba, mbd_CO2_maintn = Flux!(par,pools,fluxes,Flux_MBD)
 
     epo_dom,eph_dom,em_dom = EnzymeTurnover(par,pools)
 

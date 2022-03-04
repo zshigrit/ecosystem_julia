@@ -5,25 +5,24 @@ struct Flux_DOM end
 struct Flux_MBA end
 struct Flux_MBD end
 
-
-mutable struct CFluxes{FT<:AbstractFloat}
-    pomo_dom ::FT
-    pomo_mom ::FT
-    pomh_dom ::FT
-    pomh_mom ::FT
-    mom_dom ::FT
-    dom_mba ::FT 
-    dom_qom ::FT
-    qom_dom ::FT 
-    co2_maintn_mba ::FT 
-    co2_growth     ::FT 
-    mba_pomh ::FT 
-    mba_pomo ::FT 
-    mba_dom  ::FT
-    mba_mbd  ::FT
-    mba_eph  ::FT
-    mba_epo  ::FT
-    mba_em   ::FT
-    mbd_mba  ::FT
-    co2_maintn_mbd ::FT
+Base.@kwdef mutable struct CFluxes{FT<:AbstractFloat}
+    pomo_dom ::FT = 0.0
+    pomo_mom ::FT = 0.0
+    pomh_dom ::FT = 0.0
+    pomh_mom ::FT = 0.0
+    mom_dom ::FT  = 0.0
+    dom_mba ::FT  = 0.0
+    dom_qom ::FT  = 0.0
+    qom_dom ::FT  = 0.0
+    co2_maintn_mba ::FT = 0.0
+    co2_growth     ::FT = 0.0
+    mba_pomh ::FT = 0.0
+    mba_pomo ::FT = 0.0
+    mba_dom  ::FT = 0.0
+    mba_mbd  ::FT = 0.0
+    mba_eph  ::FT = 0.0
+    mba_epo  ::FT = 0.0
+    mba_em   ::FT = 0.0
+    mbd_mba  ::FT = 0.0
+    co2_maintn_mbd ::FT = 0.0
 end

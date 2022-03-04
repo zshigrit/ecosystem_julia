@@ -9,6 +9,6 @@ mutable struct CPools{FT<:AbstractFloat}
     EPO ::FT 
     EPH ::FT 
     EM  ::FT 
-    PTT ::FT # protist 
-    VIR ::FT # virus
+    # PTT ::FT # protist 
+    # VIR ::FT # virus
 end
