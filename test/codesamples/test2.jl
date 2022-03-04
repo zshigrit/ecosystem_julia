@@ -1,4 +1,7 @@
 module test2
+
+#println(tt1(1,3))
+
 include("test1.jl")
 # using .test1:test_a,test_b
 import .test1: test_a as tt1
