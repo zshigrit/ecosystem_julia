@@ -52,7 +52,8 @@ function InitCInputs(ilayer,par)
     # litter_dom = 100000.0/365.0/24.0 * 0.25
     allocationcoeff = [0.35,0.3,0.2,0.1,0.05,1.0]
 
-    SIN_day_str = readlines("/Users/zhengshi/Library/CloudStorage/OneDrive-UniversityofOklahoma/my_git/ecosystem_julia/test/SIN_day.dat") # unit: mgC-cm2-d
+    # SIN_day_str = readlines("/Users/zhengshi/Library/CloudStorage/OneDrive-UniversityofOklahoma/my_git/ecosystem_julia/test/SIN_day.dat") # unit: mgC-cm2-d
+    SIN_day_str = readlines("../../../test/SIN_day.dat") # unit: mgC-cm2-d
 
     SIN_day = parse.(Float64, SIN_day_str) # string to numeric
 

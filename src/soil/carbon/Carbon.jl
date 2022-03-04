@@ -26,6 +26,7 @@ module main
     include("functions/InitModel.jl")
     include("functions/ModelRun.jl")
     include("functions/Outputs.jl")
+    include("functions/TempDependencePar.jl")
     # include("functions/Plot.jl")
 
 
@@ -35,7 +36,7 @@ module main
     LF0 = 0.1
     r0 = 0.01
     fQOM = 0.05
-
+    Temp = 20.0 + 2.0
 
     # flux initilization (default values are 0s)
     flux_pomo = Flux_POMo();flux_pomh = Flux_POMh();
@@ -53,6 +54,7 @@ module main
             println(ilayer)
             par = SoilPar();
             InitParDepth!(par,ilayer,par_vary)
+            ParTemp!(par,Temp)
             cpools = InitCPools(ilayer)
             input_c = InitCInputs(ilayer,par);
             ModRunDepth!(par,cpools,ilayer,output_ly,input_c,depth_output)
@@ -88,7 +90,7 @@ module main
     end
 
     
-    label = ["0-10 cm" "10-30 cm" "30-50 cm" "50-70 cm" "70-100 cm"]
+    label = ["0-20 cm" "20-40 cm" "40-60 cm" "60-80 cm" "80-100 cm"]
     groupedbar(par_scenarios,transpose(ll),
                 bar_position = :stack,
                 bar_width=0.4,label=label,guidefontsize=8,
@@ -97,6 +99,6 @@ module main
                 ylabel = "Soil Carbon (g/m2)",
                 size=(400,200),dpi=600)
 
-    savefig("soc_CPools_layers_100yrs_x.png")
+    savefig("soc_CPools_layers_100yrs_tem_sensix.png")
 
 end # module
