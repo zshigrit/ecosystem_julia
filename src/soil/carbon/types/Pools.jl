@@ -1,4 +1,5 @@
-mutable struct CPools{FT<:AbstractFloat}
+abstract type abs_pools end
+mutable struct Pools{FT<:AbstractFloat}
     POMo::FT
     POMh::FT
     MOM ::FT

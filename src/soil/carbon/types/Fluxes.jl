@@ -5,7 +5,10 @@ struct Flux_DOM end
 struct Flux_MBA end
 struct Flux_MBD end
 
-Base.@kwdef mutable struct CFluxes{FT<:AbstractFloat}
+abstract type abs_fluxes end 
+    
+
+Base.@kwdef mutable struct Fluxes{FT<:AbstractFloat}
     pomo_dom ::FT = 0.0
     pomo_mom ::FT = 0.0
     pomh_dom ::FT = 0.0

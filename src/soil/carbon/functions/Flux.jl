@@ -1,6 +1,6 @@
 ##2 develop functions: Fluxes
 
-function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_POMo})
+function Flux!(par::SoilPar,pools::Pools,flux::Fluxes,::Type{Flux_POMo})
     @unpack frPOM2DOM = par
     pomo_dec = MM(par,pools,Flux_POMo)
     pomo_dom = frPOM2DOM * pomo_dec
@@ -11,7 +11,7 @@ function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_POMo})
     return pomo_dom,pomo_mom  
 end
 
-function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_POMh})
+function Flux!(par::SoilPar,pools::Pools,flux::Fluxes,::Type{Flux_POMh})
     @unpack frPOM2DOM = par
     pomh_dec = MM(par,pools,Flux_POMh)
     pomh_dom = frPOM2DOM * pomh_dec
@@ -22,7 +22,7 @@ function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_POMh})
     return pomh_dom,pomh_mom  
 end
 
-function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_MOM})
+function Flux!(par::SoilPar,pools::Pools,flux::Fluxes,::Type{Flux_MOM})
     mom_dec      = MM(par,pools,Flux_MOM)
     mom_dom      = mom_dec
 
@@ -30,7 +30,7 @@ function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_MOM})
     return mom_dom 
 end
 
-function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_DOM})
+function Flux!(par::SoilPar,pools::Pools,flux::Fluxes,::Type{Flux_DOM})
     @unpack DOM,QOM = pools 
     @unpack Kads,Qmax,Kdes = par
     dom_dec = MM(par,pools,Flux_DOM)
@@ -58,7 +58,7 @@ function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_DOM})
     return dom_mba, dom_qom, qom_dom 
 end
 
-function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_MBA})
+function Flux!(par::SoilPar,pools::Pools,flux::Fluxes,::Type{Flux_MBA})
     @unpack rMORT, frMB2DOM, frMBA_to_POMh, frMBA_to_POMo, KsDOM, VmA2D = par
     @unpack MBA,DOM = pools 
     mb = MBA
@@ -80,7 +80,7 @@ function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_MBA})
     return mba_mortality,mba_dom,mba_pomo,mba_pomh,mba_mbd,mba_CO2_growth,mba_CO2_maintn
 end
 
-function Flux!(par::SoilPar,pools::CPools,flux::CFluxes,::Type{Flux_MBD}) # Respiration of MBD and resurcitaion
+function Flux!(par::SoilPar,pools::Pools,flux::Fluxes,::Type{Flux_MBD}) # Respiration of MBD and resurcitaion
     @unpack KsDOM,VmD2A,VmD = par
     @unpack DOM,MBD = pools
     phi = DOM/(DOM + KsDOM)

@@ -8,13 +8,16 @@
                 td_set::AbstractTDParameterSet{FT},
                 T::FT
     ) where {FT<:AbstractFloat}
+
 A correction factor based on arrhenius's fitting procedure, given
 - `td_set` [`ArrheniusTD`](@ref) or [`ArrheniusPeakTD`](@ref) type struct
 - `T` Leaf temperature in `[K]`
+
 The equation used for [`ArrheniusTD`](@ref) is
 ```math
 corr = \\exp \\left( \\dfrac{ΔHa}{R T_0} - \\dfrac{ΔHa}{R T_1} \\right)
 ```
+
 The equations used for [`ArrheniusPeakTD`](@ref) are
 ```math
 corr = \\exp \\left( \\dfrac{ΔHa}{R T_0} - \\dfrac{ΔHa}{R T_1} \\right)
@@ -22,6 +25,7 @@ corr = \\exp \\left( \\dfrac{ΔHa}{R T_0} - \\dfrac{ΔHa}{R T_1} \\right)
        \\dfrac{ 1 + \\exp \\left( \\dfrac{S_v T_0 - H_d}{R T_0} \\right) }
               { 1 + \\exp \\left( \\dfrac{S_v T_1 - H_d}{R T_1} \\right) }
 ```
+
 The equation used for [`Q10TD`](@ref) is
 ```math
 corr = \\left( \\dfrac{T_1 - T_\\text{REF}}{10} \\right)^{Q_{10}}

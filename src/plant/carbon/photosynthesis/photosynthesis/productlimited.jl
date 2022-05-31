@@ -17,6 +17,7 @@
                 leaf::Leaf{FT},
                 envir::AirLayer{FT}
     ) where {FT<:AbstractFloat}
+
 Calculate the product limited photosynthetic rate, given
 - `photo_set` [`C3ParaSet`](@ref) or [`C4ParaSet`](@ref) type struct
 - `leaf` [`Leaf`](@ref) type struct

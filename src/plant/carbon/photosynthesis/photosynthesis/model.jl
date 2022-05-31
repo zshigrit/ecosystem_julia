@@ -36,14 +36,17 @@
                 mode::GCO₂Mode,
                 g_lc::FT
     ) where {FT<:AbstractFloat}
+
 Compute leaf photosynthetic rates, given
 - `photo_set` [`AbstractPhotoModelParaSet`](@ref) type parameter set
 - `leaf` [`Leaf`](@ref) type struct
 - `p_i` Given leaf internal CO₂
 - `envir` [`AirLayer`](@ref) type struct
 - `g_lc` Given leaf diffusive conductance to CO₂
+
 The C3 photosynthesis model is from Farquhar et al. (1980) "A biochemical model
     of photosynthetic CO₂ assimilation in leaves of C3 species."
+
 The C4 photosynthesis model is adapted from Collatz et al. (1992) "Coupled
     photosynthesis-stomatal conductance model for leaves of C4 plants."
 """
