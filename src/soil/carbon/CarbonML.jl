@@ -96,6 +96,6 @@ module main
                 ylabel = "Soil Carbon (g/m2)",
                 size=(400,200),dpi=600)
 
-    savefig("soc_CPools_layers_100yrs_xxx.png")
+    savefig("soc_tttest.png")
 
 end # module

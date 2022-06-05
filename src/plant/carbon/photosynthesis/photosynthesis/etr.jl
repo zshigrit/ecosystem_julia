@@ -7,6 +7,7 @@
     leaf_ETR!(photo_set::AbstractPhotoModelParaSet{FT},
               leaf::Leaf{FT}
     ) where {FT<:AbstractFloat}
+
 Update the electron transport variables in the leaf struct, given
 - `photo_set` [`C3ParaSet`](@ref) or [`C4ParaSet`](@ref) type struct
 - `leaf` [`Leaf`](@ref) type struct

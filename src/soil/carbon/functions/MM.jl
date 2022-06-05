@@ -1,6 +1,6 @@
 ##1 all Michaelis-Menten equations
 
-function MM(par::SoilPar,pools::CPools,::Type{Flux_POMo}) 
+function MM(par::SoilPar,pools::Pools,::Type{Flux_POMo}) 
     @unpack vd_pomo, ks_pomo  = par
     @unpack POMo, EPO = pools
     vm = vd_pomo   
@@ -13,7 +13,7 @@ function MM(par::SoilPar,pools::CPools,::Type{Flux_POMo})
     return MM
 end
 
-function MM(par::SoilPar,pools::CPools,::Type{Flux_POMh}) 
+function MM(par::SoilPar,pools::Pools,::Type{Flux_POMh}) 
     @unpack vd_pomh, ks_pomh  = par
     @unpack POMh, EPH = pools
     vm = vd_pomh   
@@ -26,7 +26,7 @@ function MM(par::SoilPar,pools::CPools,::Type{Flux_POMh})
     return MM
 end
 
-function MM(par::SoilPar,pools::CPools,::Type{Flux_MOM}) 
+function MM(par::SoilPar,pools::Pools,::Type{Flux_MOM}) 
     @unpack vd_mom, ks_mom  = par
     @unpack MOM, EM = pools
     vm = vd_mom   
@@ -39,7 +39,7 @@ function MM(par::SoilPar,pools::CPools,::Type{Flux_MOM})
     return MM
 end
 
-function MM(par::SoilPar,pools::CPools,::Type{Flux_DOM}) 
+function MM(par::SoilPar,pools::Pools,::Type{Flux_DOM}) 
     @unpack Vg, Vm, Yg, KsDOM  = par
     @unpack DOM, MBA = pools
     vm = (Vg + Vm)/Yg    
@@ -52,7 +52,7 @@ function MM(par::SoilPar,pools::CPools,::Type{Flux_DOM})
     return MM
 end
 
-function MM(par::SoilPar,pools::CPools,::Type{Flux_MBA}) 
+function MM(par::SoilPar,pools::Pools,::Type{Flux_MBA}) 
     @unpack Vg, Yg, KsDOM, Vm  = par
     @unpack MBA,DOM = pools
     enzyme    = MBA 
